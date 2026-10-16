@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zomato Restaurant Cost Clustering & Data Intelligence | Priya Sharma</title>
+  <meta name="description" content="Interactive Machine Learning Clustering and Exploratory Data Analysis on Zomato restaurants by Priya Sharma. Unsupervised K-Means clustering, silhouette scores, and restaurant insights.">
+  <meta name="author" content="Priya Sharma">
+  <meta name="keywords" content="Zomato, Machine Learning, K-Means Clustering, Python, EDA, Data Science, Portfolio, Priya Sharma">
+
+  <!-- Open Graph / Meta -->
+  <meta property="og:title" content="Zomato Restaurant Cost Clustering & Analytics | Priya Sharma">
+  <meta property="og:description" content="Interactive Machine Learning segmentation of 105+ restaurants across Hyderabad. Built with Python, Scikit-Learn, and modern Web UI.">
+  <meta property="og:type" content="website">
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+  <!-- Sticky Navbar -->
+  <header class="navbar" id="top-nav">
+    <div class="container nav-container">
+      <a href="#hero" class="brand" id="brand-link">
+        <div class="brand-icon">
+          <i class="fa-solid fa-utensils"></i>
+        </div>
+        <div class="brand-text">
+          Zomato<span>Intelligence</span>
+          <span class="creator-tag">By Priya Sharma</span>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#hero" class="nav-link active"><i class="fa-solid fa-house"></i> Overview</a></li>
+          <li><a href="#ml-playground" class="nav-link"><i class="fa-solid fa-brain"></i> ML Clustering</a></li>
+          <li><a href="#eda-hub" class="nav-link"><i class="fa-solid fa-chart-pie"></i> EDA Visuals</a></li>
+          <li><a href="#explorer" class="nav-link"><i class="fa-solid fa-compass"></i> Restaurant Explorer</a></li>
+          <li><a href="#predictor" class="nav-link"><i class="fa-solid fa-calculator"></i> Predictor</a></li>
+          <li><a href="#author" class="nav-link"><i class="fa-solid fa-user-graduate"></i> About Author</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-cta">
+        <a href="https://github.com/sharmapriya18504-dotcom/zomato_project" target="_blank" rel="noopener noreferrer" class="btn-secondary" id="github-header-btn">
+          <i class="fa-brands fa-github"></i> GitHub Repo
+        </a>
+        <a href="#ml-playground" class="btn-primary" id="cta-cluster-btn">
+          <i class="fa-solid fa-bolt"></i> Explore Clusters
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main>
+    <section class="hero" id="hero">
+      <div class="container">
+        <div class="hero-pill">
+          <i class="fa-solid fa-sparkles"></i> Unsupervised Machine Learning • K-Means & EDA
+        </div>
+
+        <h1 class="hero-title" id="main-heading">
+          Zomato Restaurant Cost Clustering<br>& Data Intelligence
+        </h1>
+
+        <p class="hero-subtitle">
+          An end-to-end Data Science project segmenting 105+ restaurants into intelligent pricing tiers 
+          (Budget, Mid-Range, Premium) using Scikit-Learn K-Means, Silhouette evaluation, and comprehensive review analytics.
+        </p>
+
+        <div class="hero-author-banner">
+          <div class="author-avatar">PS</div>
+          <div class="author-info">
+            Developed with ❤️ by <strong>Priya Sharma</strong> • B.Tech Student & Aspiring Data Scientist
+          </div>
+        </div>
+
+        <!-- 4 Key Metrics Cards -->
+        <div class="kpi-grid" id="kpi-metrics-grid">
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-label">Restaurants Analyzed</span>
+              <i class="fa-solid fa-store kpi-icon"></i>
+            </div>
+            <div class="kpi-value" id="kpi-restaurants-count">105</div>
+            <div class="kpi-subtext">Across Gachibowli & Hyderabad</div>
+          </div>
+
+          <div class="kpi-card kpi-budget">
+            <div class="kpi-header">
+              <span class="kpi-label">Reviews Processed</span>
+              <i class="fa-solid fa-comments kpi-icon"></i>
+            </div>
+            <div class="kpi-value" id="kpi-reviews-count">10,000+</div>
+            <div class="kpi-subtext">Ratings, sentiments & timestamps</div>
+          </div>
+
+          <div class="kpi-card kpi-mid">
+            <div class="kpi-header">
+              <span class="kpi-label">Average Cost (for two)</span>
+              <i class="fa-solid fa-indian-rupee-sign kpi-icon"></i>
+            </div>
+            <div class="kpi-value" id="kpi-avg-cost">₹861</div>
+            <div class="kpi-subtext">Min ₹150 • Max ₹2,800</div>
+          </div>
+
+          <div class="kpi-card kpi-premium">
+            <div class="kpi-header">
+              <span class="kpi-label">Optimal Silhouette Score</span>
+              <i class="fa-solid fa-chart-line kpi-icon"></i>
+            </div>
+            <div class="kpi-value" id="kpi-silhouette">0.590</div>
+            <div class="kpi-subtext">Strong mathematical separation (K=3)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: Interactive ML Clustering Playground -->
+    <section class="section-block" id="ml-playground">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <span class="section-tag">Machine Learning Engine</span>
+            <h2 class="section-title">Interactive K-Means Playground</h2>
+            <p class="section-desc">
+              Adjust the cluster parameter <em>K</em> in real time to observe how restaurants regroup, 
+              compare inertia on the Elbow curve, and evaluate mathematical silhouette scores.
+            </p>
+          </div>
+          <div>
+            <button class="btn-secondary" id="reset-cluster-btn">
+              <i class="fa-solid fa-rotate-left"></i> Reset to Optimal (K=3)
+            </button>
+          </div>
+        </div>
+
+        <!-- Controls Bar -->
+        <div class="ml-control-panel">
+          <div class="controls-flex">
+            <div class="slider-group">
+              <div class="slider-label-row">
+                <span class="slider-title">
+                  <i class="fa-solid fa-sliders"></i> Number of Clusters (K): 
+                  <span class="k-badge" id="k-current-badge">K = 3</span>
+                </span>
+                <span style="font-size: 0.85rem; color: var(--primary-light); font-weight: 600;" id="k-optimal-hint">
+                  <i class="fa-solid fa-star"></i> Recommended Elbow Point
+                </span>
+              </div>
+              <input type="range" min="2" max="6" value="3" step="1" class="range-slider" id="k-slider">
+              <div class="slider-ticks">
+                <span>K=2</span>
+                <span>K=3 (Elbow)</span>
+                <span>K=4</span>
+                <span>K=5</span>
+                <span>K=6</span>
+              </div>
+            </div>
+
+            <div class="metrics-pills">
+              <div class="metric-pill-item">
+                <div class="metric-pill-label">Silhouette Score</div>
+                <div class="metric-pill-val" id="pill-sil-score">0.590</div>
+                <div class="metric-pill-status" id="pill-sil-status" style="color: var(--budget);">
+                  <i class="fa-solid fa-circle-check"></i> Good Separation
+                </div>
+              </div>
+
+              <div class="metric-pill-item">
+                <div class="metric-pill-label">Model Inertia</div>
+                <div class="metric-pill-val" id="pill-inertia">18.29</div>
+                <div class="metric-pill-status" style="color: var(--text-dim);">Within-cluster sum of squares</div>
+              </div>
+
+              <div class="metric-pill-item">
+                <div class="metric-pill-label">Feature Scaler</div>
+                <div class="metric-pill-val" style="font-size: 1.15rem; margin-top: 8px;">StandardScaler</div>
+                <div class="metric-pill-status" style="color: var(--text-dim);">Normalized Z-Score</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ML Charts Grid (Elbow Curve & Cluster Distribution) -->
+        <div class="charts-grid">
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div class="chart-card-title">
+                <i class="fa-solid fa-chart-line" style="color: var(--primary-light);"></i>
+                Elbow Method Curve (Inertia vs K)
+              </div>
+              <span class="chart-card-badge" id="elbow-badge">Elbow Point at K=3</span>
+            </div>
+            <div class="chart-container-inner">
+              <canvas id="elbowChart"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div class="chart-card-title">
+                <i class="fa-solid fa-chart-column" style="color: var(--mid);"></i>
+                Cluster Cost Distribution
+              </div>
+              <span class="chart-card-badge" id="cluster-chart-subtitle">Showing K=3 Tiers</span>
+            </div>
+            <div class="chart-container-inner">
+              <canvas id="clusterDistChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Cluster Info Cards -->
+        <div class="cluster-cards-row" id="cluster-cards-container">
+          <!-- Dynamically populated via js/app.js -->
+        </div>
+
+        <!-- Business Strategy Callout -->
+        <div class="business-insights-card">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <i class="fa-solid fa-lightbulb" style="color: var(--primary-light); font-size: 1.4rem;"></i>
+            <h3 style="font-size: 1.2rem; font-weight: 800;">Strategic Business Applications for Zomato</h3>
+          </div>
+          <div class="insights-grid">
+            <div class="insight-point">
+              <div class="insight-point-icon"><i class="fa-solid fa-tags" style="color: var(--budget);"></i></div>
+              <div class="insight-point-content">
+                <h4>Targeted Budget Campaigns</h4>
+                <p>Restaurants in the Budget cluster (₹150-₹800) attract students & young professionals. Ideal for daily lunch deals and quick delivery promotions.</p>
+              </div>
+            </div>
+
+            <div class="insight-point">
+              <div class="insight-point-icon"><i class="fa-solid fa-users" style="color: var(--mid);"></i></div>
+              <div class="insight-point-content">
+                <h4>Mid-Range Dining & Family Buffets</h4>
+                <p>The Mid-Range tier (₹850-₹1,400) represents popular corporate favorites, family dining, and weekend buffet destinations like Barbeque Nation.</p>
+              </div>
+            </div>
+
+            <div class="insight-point">
+              <div class="insight-point-icon"><i class="fa-solid fa-crown" style="color: var(--premium);"></i></div>
+              <div class="insight-point-content">
+                <h4>Zomato Gold & Fine Dining</h4>
+                <p>The Premium cluster (₹1,500+) drives high average order value (AOV). Prime candidates for Zomato Gold table bookings and curated nightlife guides.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: Exploratory Data Analysis (EDA) Hub -->
+    <section class="section-block" id="eda-hub">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <span class="section-tag">Exploratory Data Analysis</span>
+            <h2 class="section-title">EDA & Restaurant Market Insights</h2>
+            <p class="section-desc">
+              Comprehensive statistical distribution of dining costs, cuisine diversity, and customer ratings 
+              derived from over 10,000 verified Zomato reviews.
+            </p>
+          </div>
+        </div>
+
+        <div class="eda-grid">
+          <!-- Chart 1: Cost Histogram -->
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div class="chart-card-title">
+                <i class="fa-solid fa-money-bill-wave" style="color: var(--budget);"></i>
+                Restaurant Cost Distribution (₹)
+              </div>
+              <span class="chart-card-badge">Histogram</span>
+            </div>
+            <div class="chart-container-inner">
+              <canvas id="costHistChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Chart 2: Top Cuisines -->
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div class="chart-card-title">
+                <i class="fa-solid fa-bowl-food" style="color: var(--primary-light);"></i>
+                Top 10 Most Popular Cuisines
+              </div>
+              <span class="chart-card-badge">Frequency Count</span>
+            </div>
+            <div class="chart-container-inner">
+              <canvas id="cuisinesChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Chart 3: Rating Distribution -->
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div class="chart-card-title">
+                <i class="fa-solid fa-star" style="color: var(--premium);"></i>
+                Customer Rating Distribution (10k Reviews)
+              </div>
+              <span class="chart-card-badge">1★ to 5★</span>
+            </div>
+            <div class="chart-container-inner">
+              <canvas id="ratingsChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Chart 4: Top Reviewed Restaurants -->
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div class="chart-card-title">
+                <i class="fa-solid fa-ranking-star" style="color: var(--mid);"></i>
+                Top 10 Most Reviewed Restaurants
+              </div>
+              <span class="chart-card-badge">Engagement</span>
+            </div>
+            <div class="chart-container-inner">
+              <canvas id="topReviewedChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: Restaurant Directory Explorer -->
+    <section class="section-block" id="explorer">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <span class="section-tag">Interactive Directory</span>
+            <h2 class="section-title">Explore 105+ Restaurants</h2>
+            <p class="section-desc">
+              Filter by pricing cluster, search by name or cuisine, and access live Zomato listings.
+            </p>
+          </div>
+        </div>
+
+        <!-- Filter Toolbar -->
+        <div class="filter-toolbar">
+          <div class="filter-row-top">
+            <div class="search-wrapper">
+              <i class="fa-solid fa-magnifying-glass search-icon"></i>
+              <input type="text" id="search-input" class="search-input" placeholder="Search restaurant by name or cuisine (e.g. Paradise, Biryani, BBQ)...">
+            </div>
+
+            <select id="cuisine-filter" class="select-dropdown">
+              <option value="ALL">All Cuisines (Any)</option>
+              <option value="North Indian">North Indian</option>
+              <option value="Chinese">Chinese</option>
+              <option value="Biryani">Biryani</option>
+              <option value="Continental">Continental</option>
+              <option value="Asian">Asian</option>
+              <option value="Fast Food">Fast Food</option>
+              <option value="Italian">Italian</option>
+              <option value="Desserts">Desserts</option>
+              <option value="South Indian">South Indian</option>
+              <option value="Kebab">Kebab</option>
+            </select>
+
+            <select id="sort-select" class="select-dropdown">
+              <option value="default">Sort by: Default</option>
+              <option value="price-asc">Price: Low to High (₹)</option>
+              <option value="price-desc">Price: High to Low (₹)</option>
+              <option value="rating-desc">Rating: Highest First (★)</option>
+              <option value="reviews-desc">Most Reviewed</option>
+            </select>
+          </div>
+
+          <div class="filter-row-bottom">
+            <div class="cluster-pills-filter" id="cluster-filter-pills">
+              <button class="filter-pill-btn active" data-cluster="ALL">All Tiers</button>
+              <button class="filter-pill-btn" data-cluster="0">Budget Friendly (₹)</button>
+              <button class="filter-pill-btn" data-cluster="1">Mid-Range (₹₹)</button>
+              <button class="filter-pill-btn" data-cluster="2">Premium / Luxury (₹₹₹)</button>
+            </div>
+
+            <div class="results-count-text" id="results-count-text">
+              Showing 105 of 105 restaurants
+            </div>
+          </div>
+        </div>
+
+        <!-- Restaurants Grid -->
+        <div class="restaurants-grid" id="restaurants-grid-container">
+          <!-- Populated dynamically via js/app.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: Interactive Restaurant Cluster Predictor -->
+    <section class="section-block" id="predictor">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <span class="section-tag">Machine Learning Inference</span>
+            <h2 class="section-title">New Restaurant Pricing Predictor</h2>
+            <p class="section-desc">
+              Test the trained K-Means model on any hypothetical or new restaurant to classify its price tier.
+            </p>
+          </div>
+        </div>
+
+        <div class="predictor-box">
+          <form class="predictor-form" id="predictor-form" onsubmit="return false;">
+            <div class="form-field">
+              <label for="pred-name">Restaurant Name</label>
+              <input type="text" id="pred-name" value="Royal Dawat Bistro" placeholder="Enter restaurant name...">
+            </div>
+
+            <div class="form-field">
+              <label for="pred-cost">Estimated Cost for Two (in ₹ INR)</label>
+              <input type="number" id="pred-cost" value="950" min="50" max="10000" step="50" placeholder="e.g. 800">
+            </div>
+
+            <div class="form-field">
+              <label for="pred-cuisine">Primary Cuisine Style</label>
+              <input type="text" id="pred-cuisine" value="Mughlai & North Indian" placeholder="e.g. Continental, Fast Food">
+            </div>
+
+            <button type="button" class="btn-primary" id="run-prediction-btn" style="justify-content: center; padding: 14px 24px;">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> Predict Segment Tier
+            </button>
+          </form>
+
+          <div class="predictor-result-panel" id="predictor-result-panel">
+            <span class="result-cluster-badge tag-mid" id="pred-badge">
+              <i class="fa-solid fa-utensils"></i> Mid-Range Dining
+            </span>
+            <div class="result-target-cost" id="pred-cost-display">₹950</div>
+            <p class="result-recommendation" id="pred-recommendation">
+              Belongs to the <strong>Mid-Range dining segment</strong> (Centroid ~₹1,125). 
+              Recommended for family dining, corporate weekend gatherings, and value-for-money multi-cuisine menus.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: About Author / Portfolio -->
+    <section class="section-block" id="author">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <span class="section-tag">About The Creator</span>
+            <h2 class="section-title">Priya Sharma</h2>
+            <p class="section-desc">
+              B.Tech Student & Aspiring Data Scientist passionate about Machine Learning and Data-Driven Products.
+            </p>
+          </div>
+        </div>
+
+        <div class="author-profile-card">
+          <div class="author-media-col">
+            <div class="author-big-avatar">
+              <i class="fa-solid fa-user-astronaut"></i>
+            </div>
+            <div class="author-name-title">Priya Sharma</div>
+            <div class="author-role-sub">B.Tech • Data Science & ML</div>
+          </div>
+
+          <div class="author-bio-content">
+            <h3>Turning Raw Restaurant Data into Business Intelligence</h3>
+            <p>
+              Hi, I'm <strong>Priya Sharma</strong>! This project demonstrates my hands-on ability to extract, clean, 
+              analyze, and build unsupervised Machine Learning clustering models from real-world datasets. 
+              By segmenting restaurant pricing structures, this model provides actionable intelligence for 
+              recommendation systems, dynamic pricing, and targeted promotional campaigns.
+            </p>
+
+            <div class="skills-pill-group">
+              <span class="skill-tag"><i class="fa-brands fa-python" style="color: #38bdf8;"></i> Python</span>
+              <span class="skill-tag"><i class="fa-solid fa-database" style="color: #34d399;"></i> Pandas & NumPy</span>
+              <span class="skill-tag"><i class="fa-solid fa-brain" style="color: #a78bfa;"></i> Scikit-Learn K-Means</span>
+              <span class="skill-tag"><i class="fa-solid fa-chart-simple" style="color: #f472b6;"></i> Silhouette Evaluation</span>
+              <span class="skill-tag"><i class="fa-solid fa-chart-pie" style="color: #fbbf24;"></i> Exploratory Data Analysis</span>
+              <span class="skill-tag"><i class="fa-solid fa-code" style="color: #f87171;"></i> Streamlit & Web UI</span>
+              <span class="skill-tag"><i class="fa-brands fa-cloudflare" style="color: #60a5fa;"></i> Vercel Ready</span>
+            </div>
+
+            <div class="author-social-links">
+              <a href="https://github.com/sharmapriya18504-dotcom/zomato_project" target="_blank" rel="noopener noreferrer" class="btn-primary">
+                <i class="fa-brands fa-github"></i> Star on GitHub
+              </a>
+              <a href="mailto:sharmapriya18504@gmail.com" class="btn-secondary">
+                <i class="fa-solid fa-envelope"></i> Contact Priya
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-copy">
+        © 2026 <strong>Zomato Restaurant Cost Clustering</strong> • Designed & Developed by <strong>Priya Sharma</strong>
+      </div>
+      <div class="footer-badge">
+        <i class="fa-solid fa-circle-check" style="color: var(--budget);"></i> Deployed on Vercel • GitHub Sync
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
