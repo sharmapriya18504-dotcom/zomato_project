@@ -1,0 +1,12 @@
+# Vercel Deployment Ignore Rules
+# Prevents Vercel from building Python scripts as Serverless Functions
+app.py
+pages/
+src/
+components/
+tests/
+docs/
+requirements.txt
+*.ipynb
+data/raw/
+.pytest_cache/

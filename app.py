@@ -177,3 +177,15 @@ with c2:
     st.plotly_chart(plot_cost_vs_rating(df_clustered, cluster_col="cluster"), use_container_width=True)
 
 st.info("💡 **Dual Deployment Note:** This repository also includes a zero-config static web UI (`index.html`) pre-configured for instant **Vercel** deployment!")
+
+
+# Top-Level Handlers for Vercel Serverless Function detectors
+def handler(request=None, *args, **kwargs):
+    return {
+        "statusCode": 200,
+        "headers": {"Content-Type": "text/html; charset=utf-8"},
+        "body": "Zomato Restaurant Intelligence Platform is active."
+    }
+
+app = handler
+application = handler
