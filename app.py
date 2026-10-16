@@ -1,16 +1,20 @@
+"""
+Zomato Restaurant Intelligence Platform — Main Application Entrypoint
+Cost Clustering, Market Analytics & Smart Recommendations
+Developed by Priya Sharma
+"""
+
 import streamlit as st
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
-from sklearn.preprocessing import StandardScaler
-from sklearn.cluster import KMeans
-from sklearn.metrics import silhouette_score
 
-# =============================
-# PAGE CONFIGURATION
-# =============================
+from components.sidebar_filters import render_sidebar_controls
+from components.kpi_cards import render_kpi_card
+from src.eda import compute_overview_kpis, generate_automated_insights
+from src.clustering import RestaurantClusterModel, generate_cluster_profiles
+from components.charts import plot_cluster_cost_boxplots, plot_cost_vs_rating
+
 st.set_page_config(
-    page_title="Zomato Restaurant Clustering | Priya Sharma",
+    page_title="Zomato Restaurant Intelligence Platform | Priya Sharma",
     page_icon="🍽️",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -20,8 +24,8 @@ st.set_page_config(
 st.markdown("""
 <style>
     .main {
-        background-color: #0b0e14;
-        color: #f8fafc;
+        background-color: #0B0E14;
+        color: #F8FAFC;
     }
     .stMetric {
         background: rgba(255, 255, 255, 0.05);
@@ -30,157 +34,146 @@ st.markdown("""
         border-radius: 12px;
     }
     h1, h2, h3 {
-        color: #ffffff;
+        color: #FFFFFF;
         font-weight: 700;
+        letter-spacing: -0.5px;
     }
-    .badge-primary {
-        background: linear-gradient(135deg, #e23744 0%, #ff5260 100%);
-        color: white;
-        padding: 4px 12px;
-        border-radius: 999px;
-        font-size: 0.85rem;
-        font-weight: 600;
+    .hero-banner {
+        background: linear-gradient(135deg, rgba(226, 55, 68, 0.15) 0%, rgba(59, 130, 246, 0.1) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 30px;
+        margin-bottom: 24px;
+    }
+    .page-nav-card {
+        background: rgba(21, 28, 44, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 18px;
+        height: 100%;
+        transition: transform 0.2s;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# =============================
-# SIDEBAR
-# =============================
-with st.sidebar:
-    st.image("https://upload.wikimedia.org/wikipedia/commons/b/bd/Zomato_Logo.svg", width=180)
-    st.markdown("### 📊 Project Intelligence")
-    st.markdown("**Author:** Priya Sharma")
-    st.markdown("**Role:** B.Tech Student | Aspiring Data Scientist")
-    st.divider()
-    
-    st.markdown("### ⚙️ Clustering Parameters")
-    k = st.slider("Select Number of Clusters (K):", min_value=2, max_value=6, value=3, step=1)
-    
-    st.divider()
-    st.markdown("🌐 **Web UI Deployment:**")
-    st.info("Check out the standalone interactive web UI deployed on Vercel at root (`index.html`)!")
+# Render Global Sidebar
+df, model_settings = render_sidebar_controls()
 
-# =============================
-# HEADER & HERO
-# =============================
-st.title("🍽️ Zomato Restaurant Cost Clustering & Analytics")
+# Hero Banner
 st.markdown("""
-Segmenting restaurants into intelligent pricing tiers (**Budget, Mid-Range, Premium**) 
-using Machine Learning (K-Means Clustering) and Exploratory Data Analysis.
-""")
+<div class="hero-banner">
+    <div style="display: inline-block; background: rgba(226, 55, 68, 0.2); border: 1px solid #E23744; color: #FF5A66; padding: 4px 14px; border-radius: 999px; font-size: 0.82rem; font-weight: 700; margin-bottom: 12px;">
+        🚀 Production-Grade Machine Learning & Market Intelligence
+    </div>
+    <h1 style="font-size: 2.4rem; margin: 0 0 10px 0;">
+        Zomato Restaurant Intelligence Platform
+    </h1>
+    <p style="font-size: 1.05rem; color: #94A3B8; margin: 0 0 16px 0; max-width: 850px;">
+        Cost Clustering, Market Analytics & Smart Recommendations across 105+ dining establishments in Hyderabad.
+        Powered by Scikit-Learn unsupervised clustering, Plotly interactive analytics, and multi-criteria recommendation scoring.
+    </p>
+    <div style="font-size: 0.85rem; color: #CBD5E1;">
+        Developed with ❤️ by <strong>Priya Sharma</strong> • B.Tech Student | Aspiring Data Scientist & ML Engineer
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
-# =============================
-# LOAD & CLEAN DATA
-# =============================
-@st.cache_data
-def load_data():
-    df_raw = pd.read_csv("Zomato Restaurant names and Metadata.csv")
-    df_raw['Cost'] = df_raw['Cost'].astype(str).str.replace(',', '').str.strip()
-    df_raw['Cost'] = pd.to_numeric(df_raw['Cost'], errors='coerce')
-    df_raw = df_raw.dropna(subset=['Cost'])
-    return df_raw
-
-df = load_data()
-
-# KPI Metric Cards
-col1, col2, col3, col4 = st.columns(4)
+# Executive KPIs
+kpis = compute_overview_kpis(df)
+col1, col2, col3, col4, col5 = st.columns(5)
 with col1:
-    st.metric("Total Restaurants", f"{len(df)}")
+    render_kpi_card("Total Restaurants", f"{kpis['total_restaurants']}", "Cataloged listings", "#E23744", "🍽️")
 with col2:
-    st.metric("Average Cost", f"₹{round(df['Cost'].mean(), 0):,.0f}")
+    render_kpi_card("Avg Dining Cost", f"INR {kpis['avg_cost']:,.0f}", f"Median: INR {kpis['median_cost']:,.0f}", "#3B82F6", "💵")
 with col3:
-    st.metric("Min - Max Cost", f"₹{int(df['Cost'].min())} - ₹{int(df['Cost'].max())}")
+    render_kpi_card("Avg Customer Rating", f"{kpis['avg_rating']:.2f}★", "From 10,000+ reviews", "#10B981", "⭐")
 with col4:
-    st.metric("Optimal Clusters", "K = 3")
+    render_kpi_card("Cuisines Tracked", f"{kpis['total_cuisines']}", "Diverse food styles", "#F59E0B", "🍲")
+with col5:
+    render_kpi_card("Active Clusters", f"K = {model_settings['n_clusters']}", f"Algorithm: {model_settings['algorithm'].upper()}", "#8B5CF6", "🤖")
 
 st.divider()
 
-# =============================
-# TABS INTERFACE
-# =============================
-tab1, tab2, tab3, tab4 = st.tabs([
-    "🤖 K-Means Clustering", 
-    "📉 Elbow Method & Silhouette", 
-    "📊 Raw Data & Exploration", 
-    "👩‍💻 About Priya Sharma"
-])
+# Multi-Page Navigation Hub
+st.subheader("🧭 Platform Navigation Hub")
+st.markdown("Explore dedicated analytical modules from the sidebar or click through below:")
 
-# Scale Features
-features = df[['Cost']]
-scaler = StandardScaler()
-scaled = scaler.fit_transform(features)
+nav_col1, nav_col2, nav_col3, nav_col4 = st.columns(4)
 
-kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
-df['Cluster'] = kmeans.fit_predict(scaled)
-score = silhouette_score(scaled, df['Cluster'])
-
-# TAB 1: Clustering
-with tab1:
-    st.subheader(f"🔍 Cluster Segmentation (K = {k})")
-    st.write(f"Evaluating K-Means with **Silhouette Score:** `{round(score, 3)}`")
-    
-    fig2, ax2 = plt.subplots(figsize=(8, 4))
-    sns.set_theme(style="darkgrid")
-    sns.boxplot(x='Cluster', y='Cost', data=df, palette='Set2', ax=ax2)
-    ax2.set_title("Cost Distribution across Clusters", fontsize=12)
-    ax2.set_ylabel("Cost for Two (₹)")
-    ax2.set_xlabel("Assigned Cluster")
-    st.pyplot(fig2)
-    
-    st.subheader("📋 Cluster Breakdown Summary")
-    summary = df.groupby('Cluster')['Cost'].agg(
-        Count='count',
-        Mean='mean',
-        Min='min',
-        Max='max'
-    ).reset_index()
-    summary['Mean'] = summary['Mean'].round(1)
-    st.dataframe(summary, use_container_width=True)
-
-# TAB 2: Elbow Method & Evaluation
-with tab2:
-    st.subheader("📉 Elbow Method for Optimal K")
-    st.markdown("The elbow method helps determine the optimal number of clusters by finding the inflection point where inertia decreases sharply.")
-    
-    inertia = []
-    K_range = range(2, 8)
-    for num_k in K_range:
-        model = KMeans(n_clusters=num_k, random_state=42, n_init=10)
-        model.fit(scaled)
-        inertia.append(model.inertia_)
-    
-    fig1, ax1 = plt.subplots(figsize=(8, 4))
-    ax1.plot(K_range, inertia, marker='o', color='#e23744', linewidth=2.5, markersize=7)
-    ax1.axvline(x=3, color='#3b82f6', linestyle='--', label='Elbow Point (K=3)')
-    ax1.set_xlabel("Number of Clusters (K)")
-    ax1.set_ylabel("Inertia (Within-Cluster Sum of Squares)")
-    ax1.set_title("Elbow Method Analysis")
-    ax1.legend()
-    st.pyplot(fig1)
-
-# TAB 3: Raw Data Exploration
-with tab3:
-    st.subheader("📊 Dataset Preview")
-    search_term = st.text_input("Filter restaurant by name:", "")
-    if search_term:
-        filtered_df = df[df['Name'].str.contains(search_term, case=False, na=False)]
-    else:
-        filtered_df = df
-    st.dataframe(filtered_df, use_container_width=True)
-
-# TAB 4: About Author
-with tab4:
-    st.subheader("👩‍💻 About the Author")
+with nav_col1:
     st.markdown("""
-    Hi, I am **Priya Sharma**, a B.Tech student passionate about Data Science and Machine Learning.
-    
-    **Project Highlights:**
-    - Performed Data Cleaning, Feature Engineering & Scaling
-    - Unsupervised K-Means clustering with Scikit-Learn
-    - Evaluated clustering performance using Silhouette Scores & Elbow method
-    - Built dual deployment: interactive web application for Vercel & Streamlit dashboard
-    
-    **Tech Stack:** Python, Pandas, Scikit-Learn, Streamlit, HTML5/CSS3, Vercel
-    """)
-    st.success("🚀 Ready for GitHub push and instant Vercel deployment!")
+    <div class="page-nav-card">
+        <h4>📊 1. Executive Overview</h4>
+        <p style="font-size: 0.85rem; color: #94A3B8;">High-level market summary, core KPIs, and automated factual insights.</p>
+    </div>
+    """, unsafe_allow_html=True)
+    st.markdown("""
+    <div class="page-nav-card" style="margin-top: 14px;">
+        <h4>📈 2. Exploratory Analysis</h4>
+        <p style="font-size: 0.85rem; color: #94A3B8;">Detailed distributions, IQR outlier checks, and correlation heatmaps.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+with nav_col2:
+    st.markdown("""
+    <div class="page-nav-card">
+        <h4>🤖 3. Cost Clustering</h4>
+        <p style="font-size: 0.85rem; color: #94A3B8;">K-Means & Agglomerative clustering, profiles, and boxplot segmentation.</p>
+    </div>
+    """, unsafe_allow_html=True)
+    st.markdown("""
+    <div class="page-nav-card" style="margin-top: 14px;">
+        <h4>🗺️ 4. Location Intelligence</h4>
+        <p style="font-size: 0.85rem; color: #94A3B8;">Locality dining density, market concentration, and geographic fallbacks.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+with nav_col3:
+    st.markdown("""
+    <div class="page-nav-card">
+        <h4>🔍 5. Restaurant Finder</h4>
+        <p style="font-size: 0.85rem; color: #94A3B8;">Multi-criteria recommendation engine with relaxed filter fallbacks.</p>
+    </div>
+    """, unsafe_allow_html=True)
+    st.markdown("""
+    <div class="page-nav-card" style="margin-top: 14px;">
+        <h4>⚔️ 6. Competitor Analysis</h4>
+        <p style="font-size: 0.85rem; color: #94A3B8;">Benchmark specific restaurants against local category peers.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+with nav_col4:
+    st.markdown("""
+    <div class="page-nav-card">
+        <h4>🧪 7. Model Evaluation</h4>
+        <p style="font-size: 0.85rem; color: #94A3B8;">Elbow curve, Silhouette scores, and Davies-Bouldin benchmarking.</p>
+    </div>
+    """, unsafe_allow_html=True)
+    st.markdown("""
+    <div class="page-nav-card" style="margin-top: 14px;">
+        <h4>📑 8. Reports & Exports</h4>
+        <p style="font-size: 0.85rem; color: #94A3B8;">Download executive PDF reports and custom filtered CSV records.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+st.divider()
+
+# Quick Live Clustering Preview
+st.subheader("⚡ Live Model Preview")
+cluster_model = RestaurantClusterModel(
+    algorithm=model_settings["algorithm"],
+    n_clusters=model_settings["n_clusters"],
+    feature_cols=["cost"],
+    scaler_type=model_settings["scaler"]
+)
+cluster_model.fit(df)
+df_clustered = df.copy()
+df_clustered["cluster"] = cluster_model.labels_
+
+c1, c2 = st.columns(2)
+with c1:
+    st.plotly_chart(plot_cluster_cost_boxplots(df_clustered, cluster_col="cluster"), use_container_width=True)
+with c2:
+    st.plotly_chart(plot_cost_vs_rating(df_clustered, cluster_col="cluster"), use_container_width=True)
+
+st.info("💡 **Dual Deployment Note:** This repository also includes a zero-config static web UI (`index.html`) pre-configured for instant **Vercel** deployment!")

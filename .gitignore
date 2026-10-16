@@ -20,6 +20,7 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
-# Logs
+# Logs & test caches
 *.log
 npm-debug.log*
+.pytest_cache/
