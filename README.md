@@ -1,203 +1,144 @@
-# 🍽️ Zomato Restaurant Intelligence Platform
-### Cost Clustering, Market Analytics & Smart Recommendations
+# 🍽️ Zomato Restaurant Cost Clustering & Market Intelligence Platform
 
-[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
-[![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io)
-[![Scikit-Learn](https://img.shields.io/badge/scikit--learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)](https://scikit-learn.org)
-[![Plotly](https://img.shields.io/badge/Plotly-3F4F75?style=for-the-badge&logo=plotly&logoColor=white)](https://plotly.com)
-[![Pytest](https://img.shields.io/badge/Tests-17%20Passed-10B981?style=for-the-badge&logo=pytest&logoColor=white)](https://pytest.org)
 [![Vercel Deployment](https://img.shields.io/badge/Deploy-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![Scikit-Learn](https://img.shields.io/badge/scikit--learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)](https://scikit-learn.org)
+[![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)](https://pandas.pydata.org)
+[![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org)
+[![Chart.js](https://img.shields.io/badge/Chart.js-4.4+-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white)](https://www.chartjs.org)
 
 > **Developed by [Priya Sharma](https://github.com/sharmapriya18504-dotcom)**  
-> *B.Tech Student | Aspiring Data Scientist & Machine Learning Engineer*
-
-An end-to-end Data Science & Unsupervised Machine Learning platform analyzing and segmenting 105+ restaurants across Hyderabad listed on Zomato. The application groups dining places into intelligent pricing tiers (**Budget-Friendly**, **Mid-Range Dining**, and **Premium & Luxury**) using K-Means and Agglomerative clustering, validated by mathematical Silhouette scores, and powers a transparent multi-criteria recommendation engine.
-
----
-
-## 🏛️ System Architecture
-
-```mermaid
-graph TD
-    A[Raw Data: Metadata & Reviews CSV] --> B[Data Loader & Validation Layer]
-    B --> C[Feature Engineering & Review Aggregator]
-    C --> D[(Enriched Processed Dataset)]
-    
-    D --> E[Exploratory Data Analysis Engine]
-    D --> F[Unsupervised Clustering Pipeline]
-    D --> G[Recommendation & Ranking Engine]
-    D --> H[Location & Market Intelligence]
-    
-    F --> I[Preprocessors: StandardScaler / RobustScaler]
-    I --> J[K-Means / Agglomerative Clustering]
-    J --> K[Evaluation: Silhouette, Davies-Bouldin, Calinski-Harabasz]
-    
-    E --> L[Multi-Page Streamlit Dashboard]
-    K --> L
-    G --> L
-    H --> L
-    
-    L --> M[Export Hub: PDF Reports & CSV Records]
-    D --> N[Precomputed JSON Payload: js/data.js]
-    N --> O[Standalone Static Web UI for Vercel Deployment]
-```
+> *B.Tech Student | Aspiring Data Scientist & Machine Learning Engineer*  
+> *Email: [sharmapriya18504@gmail.com](mailto:sharmapriya18504@gmail.com)*
 
 ---
 
-## 🌟 Key Features & Capabilities
+## 📌 Executive Summary
 
-1. **📊 Executive Overview Dashboard**: Real-time market metrics, KPI cards, core distributions, and automated factual takeaways.
-2. **📈 Exploratory Data Analysis (EDA)**: Interactive Plotly distributions, IQR outlier diagnostics, culinary rankings, and numerical feature correlation heatmaps.
-3. **🤖 Advanced Restaurant Clustering**:
-   - Algorithms: **K-Means Clustering** & **Agglomerative Hierarchical Clustering**.
-   - Tunable $K \in [2, 7]$ with ordered centroids ensuring ascending cost interpretation.
-   - Dynamic cluster profile tables and boxplot cost segmentation.
-4. **🧪 Model Evaluation & Benchmarking**:
-   - Interactive **Elbow Curve** (Inertia vs $K$).
-   - **Silhouette Score** (**0.590** at $K=3$), **Davies–Bouldin Index** (**0.536**), and **Calinski–Harabasz Index** (**243.8**).
-5. **🔍 Smart Recommendation Engine**:
-   - Transparent composite scoring (Rating 40%, Reviews 25%, Budget 20%, Cuisine 15%).
-   - Human-readable recommendation explanations.
-   - **Graceful Filter Relaxation**: Automatically expands search bounds when no exact matches exist.
-6. **⚔️ Competitor & Peer Analysis**: Benchmarks individual restaurants against neighborhood and category peers with delta indicators.
-7. **🗺️ Location & Market Geography**: Locality-level dining density, market concentration, and geographic fallbacks.
-8. **📑 Reports & Data Exports**: Generates executive PDF reports via ReportLab and downloadable CSV datasets.
-9. **🌐 Dual Deployment Ready**:
-   - **Streamlit Multi-Page Platform** (`app.py` & `pages/`) for local and Streamlit Cloud.
-   - **Standalone Web Application** (`index.html`, `css/`, `js/`, `vercel.json`) for instant 1-click **Vercel** hosting!
+This project performs **Unsupervised Machine Learning (K-Means Clustering)** and **Exploratory Data Analysis (EDA)** on real-world Zomato restaurant records and customer reviews across Hyderabad (Gachibowli, Banjara Hills, Jubilee Hills, Madhapur, Kondapur, etc.).
+
+By segmenting 105+ restaurants into mathematically separated pricing tiers (**Budget-Friendly**, **Mid-Range Dining**, and **Premium / Luxury**), the platform provides actionable intelligence for:
+- **Consumers**: Finding top-rated dining spots tailored to budget preferences.
+- **Restaurant Owners**: Benchmarking pricing, cuisine competition, and rating performance against peers.
+- **Zomato Marketing**: Personalizing targeted promotions, lunch combo discounts, and Zomato Gold fine dining curation.
 
 ---
 
-## 🗂️ Project Structure
+## 📊 Dataset Overview (Real Hyderabad Data)
+
+The analysis is conducted strictly on real data provided in the repository:
+
+| Dataset File | Records | Key Attributes |
+| :--- | :---: | :--- |
+| **`Zomato Restaurant names and Metadata.csv`** | **105 Restaurants** | `Name`, `Links`, `Cost` (₹150 to ₹2,800 for two), `Collections`, `Cuisines`, `Timings` |
+| **`Zomato Restaurant reviews.csv`** | **10,000+ Reviews** | `Restaurant`, `Reviewer`, `Review` text, `Rating` (1★ to 5★), `Metadata`, `Time`, `Pictures` |
+| **`zomato.ipynb`** | **Jupyter Analysis** | End-to-end data cleaning, EDA, feature scaling, and initial K-Means clustering |
+
+---
+
+## 🧠 Machine Learning: Cost Clustering & Evaluation
+
+The clustering pipeline scales the restaurant dining cost using **StandardScaler** ($Z = \frac{x - \mu}{\sigma}$) and applies **K-Means Clustering** with $K \in [2, 6]$.
+
+### Model Evaluation Metrics:
+
+| Number of Clusters ($K$) | Inertia (WCSS) | Silhouette Score | Interpretation |
+| :---: | :---: | :---: | :--- |
+| $K = 2$ | 31.83 | 0.651 | High cohesion, but too coarse for business use |
+| **$K = 3$ (Optimal Elbow)** | **18.29** | **0.590** | **Best balance: Budget, Mid-Range, and Premium** |
+| $K = 4$ | 9.42 | 0.548 | Subdivides mid-range tier |
+| $K = 5$ | 4.88 | 0.536 | Creates granular luxury splits |
+| $K = 6$ | 3.12 | 0.530 | Diminishing returns |
+
+---
+
+## 💻 Web Platform Features
+
+1. **KPI Overview**:
+   - 105 Hyderabad Restaurants Analyzed
+   - 10,000+ Verified Customer Reviews
+   - ₹861 Average Dining Cost (Min ₹150 • Max ₹2,800)
+   - 0.590 Optimal Silhouette Score ($K=3$)
+
+2. **Interactive K-Means Playground**:
+   - Real-time $K$ slider ($K=2$ to $K=6$)
+   - Dynamic Elbow Method Inertia Chart
+   - Cluster Cost Distribution Chart
+   - Real-time Silhouette status updates
+
+3. **Exploratory Data Analysis (EDA) Hub**:
+   - Dining Cost Distribution Histogram
+   - Top 10 Most Popular Cuisines (North Indian, Chinese, Continental, Biryani, Asian, Fast Food, etc.)
+   - 1★ to 5★ Customer Rating Breakdown
+   - Top 10 Most Reviewed Restaurants
+
+4. **Restaurant Directory Explorer**:
+   - Live instantaneous search by Restaurant Name or Cuisine
+   - Cuisine filter dropdown
+   - Sort by Price (Low to High / High to Low), Rating, or Review count
+   - Cluster tier filter pills
+   - Restaurant cards featuring opening timings, collections, direct Zomato URLs, and real customer review quotes
+
+5. **Pricing Tier Predictor**:
+   - Input any restaurant name, estimated cost, and cuisine style
+   - Predicts exact cluster tier with centroid distance and confetti celebration
+
+---
+
+## 🗂️ Project File Structure
 
 ```bash
 zomato_project/
-├── app.py                           # Main Streamlit platform portal
-├── index.html                       # Standalone web UI for Vercel deployment
-├── vercel.json                      # Vercel deployment & caching configuration
-├── requirements.txt                 # Project dependencies
-├── README.md                        # Project documentation & guide
-├── .gitignore                       # Git ignore rules
-├── .env.example                     # Environment template
-│
-├── pages/                           # Streamlit Multi-Page Dashboards
-│   ├── 1_📊_Executive_Overview.py
-│   ├── 2_📈_Exploratory_Analysis.py
-│   ├── 3_🤖_Cost_Clustering.py
-│   ├── 4_🗺️_Location_Intelligence.py
-│   ├── 5_🔍_Restaurant_Finder.py
-│   ├── 6_⚔️_Competitor_Analysis.py
-│   ├── 7_🧪_Model_Evaluation.py
-│   └── 8_📑_Reports_Explorer.py
-│
-├── src/                             # Core Python Computation Modules
-│   ├── __init__.py
-│   ├── config.py                    # Paths, column aliases, theme tokens
-│   ├── data_loader.py               # Safe CSV reading, encoding fallbacks, demo mode
-│   ├── validation.py                # Schema validation & column mapping layer
-│   ├── preprocessing.py             # Feature scaling, imputation, outlier checks
-│   ├── feature_engineering.py       # Review aggregation & location extraction
-│   ├── eda.py                       # KPI calculations & automated insights
-│   ├── clustering.py                # K-Means, Agglomerative, centroid ordering
-│   ├── evaluation.py                # Silhouette, Davies-Bouldin, Elbow curve
-│   ├── recommendations.py           # Multi-criteria scoring & filter relaxation
-│   ├── location_analysis.py         # Area density & tier distributions
-│   └── reporting.py                 # ReportLab PDF generator & CSV exports
-│
-├── components/                      # Reusable UI Components
-│   ├── __init__.py
-│   ├── sidebar_filters.py           # Dataset selector, upload widget & ML controls
-│   ├── kpi_cards.py                 # Styled glassmorphism metric cards
-│   ├── charts.py                    # Interactive Plotly chart builders
-│   └── restaurant_cards.py          # Restaurant listings cards with badges
-│
-├── data/
-│   ├── raw/                         # Raw metadata and reviews CSV files
-│   └── processed/                   # Enriched master dataset (zomato_enriched.csv)
-│
-├── css/                             # Custom Web UI stylesheet
-│   └── style.css
-├── js/                              # Standalone Web UI application logic & precomputed data
-│   ├── app.js
-│   └── data.js
-│
-├── tests/                           # Pytest Automated Test Suite (17 Tests)
-│   ├── test_data_validation.py
-│   ├── test_preprocessing.py
-│   ├── test_clustering.py
-│   └── test_recommendations.py
-│
-└── docs/                            # In-Depth Documentation
-    ├── architecture.md
-    ├── data_dictionary.md
-    └── model_card.md
+├── index.html                                  # Modern Semantic Responsive Web Dashboard
+├── css/
+│   └── style.css                               # Custom Dark Glassmorphism Design System (#E23744 Crimson)
+├── js/
+│   ├── app.js                                  # Interactive UI logic, Chart.js graphs, filter engine
+│   └── data.js                                 # Precomputed JSON payload of all 105 restaurants & reviews
+├── app.py                                      # Python WSGI Entrypoint & Local Dev Server
+├── wsgi.py                                     # Vercel Serverless Function WSGI Handler
+├── index.py                                    # Entrypoint fallback
+├── pyproject.toml                              # PEP 621 metadata for Vercel uv builder
+├── vercel.json                                 # Security headers & Vercel deployment configuration
+├── .vercelignore                               # Build optimization ignore rules
+├── .gitignore                                  # Git ignore rules
+├── README.md                                   # Documentation
+├── zomato.ipynb                                # Original Jupyter Data Science notebook
+├── Zomato Restaurant names and Metadata.csv    # 105 Hyderabad restaurants dataset
+└── Zomato Restaurant reviews.csv               # 10,000 reviews dataset
 ```
 
 ---
 
-## 💻 Local Setup & Installation
+## 🚀 Running Locally
 
-### 1. Clone the repository
+### Option 1: Double-click or open in any Browser
+Simply open [`index.html`](file:///c:/Users/Priya%20Sharma/Downloads/zomato_project/index.html) in Chrome, Edge, Safari, or Firefox. Everything works with zero installations!
+
+### Option 2: Python Local Server
 ```bash
-git clone https://github.com/sharmapriya18504-dotcom/zomato_project.git
-cd zomato_project
+python app.py
 ```
-
-### 2. Create and activate a Virtual Environment
-```powershell
-# Windows PowerShell
-python -m venv venv
-.\venv\Scripts\Activate.ps1
-```
-
-### 3. Install Dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Run the Streamlit Application
-```bash
-streamlit run app.py
-```
-Open `http://localhost:8501` in your browser.
-
-### 5. Run the Automated Test Suite
-```bash
-pytest tests/ -v
-```
+Visit: `http://localhost:8501`
 
 ---
 
-## 🚀 How to Deploy on Vercel (1-Click)
+## 🌐 Deploy to Vercel
 
-1. Push your latest code to GitHub:
+1. Push the code to GitHub:
    ```bash
    git add .
-   git commit -m "feat: complete advanced restaurant intelligence platform"
+   git commit -m "feat: complete professional Zomato clustering UI"
    git push origin main
    ```
-2. Log into [vercel.com](https://vercel.com) with your GitHub account.
-3. Click **"Add New Project"** -> **"Import"** `zomato_project`.
-4. Leave settings as default (Root directory `./`, Framework: Other).
-5. Click **"Deploy"**! Your interactive platform will be live in seconds with free SSL.
-
----
-
-## 📊 Machine Learning Model Benchmarks
-
-| Algorithm | Clusters ($K$) | Silhouette Score (↑) | Davies–Bouldin (↓) | Calinski–Harabasz (↑) | Model Notes |
-| :--- | :---: | :---: | :---: | :---: | :--- |
-| **K-Means** | **3** | **0.590** | **0.536** | **243.8** | **Recommended Elbow Point** |
-| **K-Means** | 4 | 0.608 | 0.502 | 344.2 | Subdivides mid-range tier |
-| **Agglomerative (Ward)** | 3 | 0.590 | 0.536 | 243.8 | Matches K-Means partitions |
-| **Agglomerative (Average)**| 3 | 0.521 | 0.578 | 186.4 | Hierarchical average linkage |
+2. Import the repository in [Vercel](https://vercel.com).
+3. Click **Deploy** — Vercel builds and deploys the platform in seconds!
 
 ---
 
 ## 👩‍💻 Author
 
 **Priya Sharma**  
-- B.Tech Student | Aspiring Data Scientist & Machine Learning Engineer  
-- GitHub: [@sharmapriya18504-dotcom](https://github.com/sharmapriya18504-dotcom)  
-- Email: sharmapriya18504@gmail.com  
+- **GitHub**: [@sharmapriya18504-dotcom](https://github.com/sharmapriya18504-dotcom)  
+- **Email**: sharmapriya18504@gmail.com  
+- **Focus**: Data Science, Machine Learning, Python & Web UI

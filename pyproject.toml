@@ -1,2 +1,10 @@
+[project]
+name = "zomato-restaurant-intelligence"
+version = "1.0.0"
+description = "Zomato Restaurant Cost Clustering and Market Analytics Platform by Priya Sharma"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
 [tool.vercel]
 entrypoint = "wsgi:app"
